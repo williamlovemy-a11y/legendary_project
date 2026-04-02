@@ -1,0 +1,28 @@
+
+<p>это абзац текста</p>
+
+<div id="chft-box" class="chat-box"></div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Local Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header>
+            <h1>Agent UI</h1>
+        </header>
+        <div id="chat-box" class="chat-box">
+            <div class="message system">Привет! Я локальная нейросеть. Чем могу помочь?</div>
+        </div>
+        <div class="input-area">
+            <textarea id="user-input" placeholder="Введите сообщение..." rows="1"></textarea>
+            <button id="send-btn">➤</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
