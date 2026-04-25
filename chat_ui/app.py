@@ -1,10 +1,11 @@
-from fastapi import FastAIP, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
-import httpx
-import json
+from fastapi.staticfiles import StaticFiles
+import routes import router
 
-app = FastAIP()
+app = FastAPI(title = "Web AI Data Agent")
+
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,33 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name = "static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(router)
 
-OLLAMA_URL = "http://localhost:11434/api/chat"
-MODEL_NAME = "gemma3:4b"
-
-@app.post("/chat")
-async def chat(request: Request):
-    data = await request.json()
-    user_message = data.get("message")
-    history = data.get("history", [])
-    
-    message = history + [{"role": "user", "content: user_message"}]
-
-    async def generate():
-        async with httpx.AsyncClient() as client:
-            async with client.stream(
-                "POST",
-                OLLAMA_URL,
-                JSON={"model": MODEL_NAME, "message": messages, "stream": True},
-                timeout = 60.0
-            ) as response:
-                async for line in response.aiter_lines():
-                    if line:
-                        yield line + "\n"
-
-    return StreamingResponse(generate(), media_type = "test/event-stream")
-
-    if__name__ == "__main__":
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
