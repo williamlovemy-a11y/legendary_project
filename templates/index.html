@@ -23,12 +23,12 @@
             <div class="quick-buttons">
                 <h3>Быстрый выбор:</h3>
                 <div class="button-group">
-                    <button class="quick-btn" onclick="quickSymptom('Болит голова')">🧠 Голова</button>
-                    <button class="quick-btn" onclick="quickSymptom('Болит живот')">🫘 Живот</button>
-                    <button class="quick-btn" onclick="quickSymptom('Кашель')">🫁 Кашель</button>
-                    <button class="quick-btn" onclick="quickSymptom('Температура')">🌡️ Температура</button>
-                    <button class="quick-btn" onclick="quickSymptom('Боль в спине')">🔙 Спина</button>
-                    <button class="quick-btn" onclick="quickSymptom('Горло болит')">🗣️ Горло</button>
+                    <button class="quick-btn" data-symptom="Болит голова">🧠 Голова</button>
+                    <button class="quick-btn" data-symptom="Болит живот">🫘 Живот</button>
+                    <button class="quick-btn" data-symptom="Кашель">🫁 Кашель</button>
+                    <button class="quick-btn" data-symptom="Температура">🌡️ Температура</button>
+                    <button class="quick-btn" data-symptom="Боль в спине">🔙 Спина</button>
+                    <button class="quick-btn" data-symptom="Горло болит">🗣️ Горло</button>
                 </div>
             </div>
 
@@ -43,15 +43,15 @@
             <div id="results-panel" class="results-panel" style="display: none;">
                 <div id="triage-indicator" class="triage-indicator"></div>
                 <div id="recommendations" class="recommendations"></div>
-                <button class="btn-secondary" onclick="resetChat()">Новая консультация</button>
+                <button id="reset-btn" class="btn-secondary">Новая консультация</button>
             </div>
 
             <!-- Input Area -->
             <div class="input-area">
                 <textarea id="user-input" placeholder="Опишите симптомы... (Например: сильно болит голова, температура 38)" rows="2"></textarea>
                 <div class="input-buttons">
-                    <button id="send-btn" class="btn-primary" onclick="sendMessage()">Отправить</button>
-                    <button id="emergency-btn" class="btn-danger" onclick="emergency()">🚨 Экстренно</button>
+                    <button id="send-btn" class="btn-primary">Отправить</button>
+                    <button id="emergency-btn" class="btn-danger">🚨 Экстренно</button>
                 </div>
             </div>
 
