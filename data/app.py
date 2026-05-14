@@ -1,20 +1,21 @@
-from fastapi import FastAIP, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 import httpx
 import json
 
-app = FastAIP()
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origis=["*"],
-    allow_credentials=True
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name = "static")
+app.mount("/static", StaticFiles(directory="../"), name = "static")
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODEL_NAME = "gemma3:4b"
@@ -25,7 +26,7 @@ async def chat(request: Request):
     user_message = data.get("message")
     history = data.get("history", [])
     
-    message = history + [{"role": "user", "content: user_message"}]
+    message = history + [{"role": "user", "content": "user_message"}]
 
     async def generate():
         async with httpx.AsyncClient() as client:
@@ -41,6 +42,6 @@ async def chat(request: Request):
 
     return StreamingResponse(generate(), media_type = "test/event-stream")
 
-    if__name__ == "__main__":
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)

@@ -4,13 +4,29 @@ const sendBtn = document.getElementById('send-btn');
 
 let messageHistory = [];
 
-function appendMessage(role, text) {
-    const div = document.createElement('div');
-    div.classList.add('message', role);
-    div.textContent = text;
-    chatBox.appendChild(div);
+function appendMessage(role, text, isStreaming = false) {
+    // Если сообщение в процессе стриминга, обновляем последнее, иначе создаем новое
+    if (isStreaming && chatBox.lastChild && chatBox.lastChild.classList.contains('ai') && chatBox.lastChild.querySelector('.streaming')) {
+        const bubble = chatBox.lastChild.querySelector('.bubble');
+        bubble.textContent = text;
+    } else {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', role);
+        
+        if (role === 'ai') {
+            messageDiv.innerHTML = `
+                <div class="avatar-chat"><i class="fas fa-robot"></i></div>
+                <div class="bubble${isStreaming ? ' streaming' : ''}">${text}</div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="avatar-chat" style="background:#1e88e5; color:white;"><i class="fas fa-user"></i></div>
+                <div class="bubble">${text}</div>
+            `;
+        }
+        chatBox.appendChild(messageDiv);
+    }
     chatBox.scrollTop = chatBox.scrollHeight;
-    return div;
 }
 
 async function sendMessage() {
@@ -21,7 +37,6 @@ async function sendMessage() {
     userInput.value = '';
     sendBtn.disabled = true;
 
-    const aiMessageDiv = appendMessage('ai', '');
     let aiResponseText = "";
 
     try {
@@ -33,6 +48,10 @@ async function sendMessage() {
                 history: messageHistory
             })
         });
+
+        if (!response.ok) {
+            throw new Error(`Ошибка сервера: ${response.status}`);
+        }
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -51,8 +70,7 @@ async function sendMessage() {
                     if (json.message && json.message.content) {
                         const content = json.message.content;
                         aiResponseText += content;
-                        aiMessageDiv.textContent = aiResponseText;
-                        chatBox.scrollTop = chatBox.scrollHeight;
+                        appendMessage('ai', aiResponseText, true);
                     }
                 } catch (e) {
                     console.error("Ошибка парсинга JSON", e);
@@ -64,14 +82,14 @@ async function sendMessage() {
         messageHistory.push({ role: "assistant", content: aiResponseText });
 
     } catch (error) {
-        aiMessageDiv.textContent = "Ошибка: " + error.message;
-        aiMessageDiv.style.color = "#ff6b6b";
+        appendMessage('ai', `⚠️ Ошибка соединения: ${error.message}. Проверьте, запущен ли сервер.`);
     } finally {
         sendBtn.disabled = false;
         userInput.focus();
     }
 }
 
+// Обработчики событий
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -79,3 +97,22 @@ userInput.addEventListener('keypress', (e) => {
         sendMessage();
     }
 });
+
+// Быстрые кнопки
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const question = btn.getAttribute('data-question');
+        if (question) {
+            userInput.value = question;
+            sendMessage();
+        }
+    });
+});
+
+// Плавный скролл до чата
+const scrollBtn = document.getElementById('scrollToDemoBtn');
+if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+        document.getElementById('demo-chat-section').scrollIntoView({ behavior: 'smooth' });
+    });
+}
