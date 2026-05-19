@@ -1,74 +1,605 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedMind - Оценка симптомов</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MediMind AI | Ваш медицинский консультант</title>
+  <!-- Google Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f9fe;
+      color: #1a2c3e;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* градиентный фон для акцентов */
+    :root {
+      --primary: #1e88e5;
+      --primary-dark: #0b5e8a;
+      --primary-soft: #d6eaff;
+      --secondary: #2c3e66;
+      --accent-mint: #c8f0e7;
+      --gray-light: #eef2f7;
+      --gray-mid: #cbd5e1;
+      --shadow-sm: 0 8px 20px rgba(0,0,0,0.02), 0 4px 8px rgba(0,0,0,0.02);
+      --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
+      --radius-xl: 2rem;
+      --radius-lg: 1.5rem;
+      --radius-md: 1rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* header */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.7rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e88e5, #0f5f9e);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .logo i {
+      background: none;
+      color: #1e88e5;
+      font-size: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #2c3e66;
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #1e88e5;
+    }
+
+    .btn-outline {
+      border: 1.5px solid #1e88e5;
+      background: transparent;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-weight: 600;
+      color: #1e88e5;
+      transition: 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: #1e88e5;
+      color: white;
+    }
+
+    /* hero */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      margin: 48px 0 32px;
+    }
+
+    .hero-text {
+      flex: 1.2;
+    }
+
+    .hero-badge {
+      background: #e3f2fd;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0b5e8a;
+      margin-bottom: 20px;
+    }
+
+    .hero-text h1 {
+      font-size: 3.2rem;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0a2b3e;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 1.18rem;
+      color: #2c445c;
+      margin-bottom: 32px;
+      max-width: 550px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #1e88e5;
+      padding: 14px 32px;
+      border-radius: 100px;
+      color: white;
+      font-weight: 600;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.2s;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(30,136,229,0.3);
+    }
+
+    .btn-primary:hover {
+      background: #0f5f9e;
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-visual {
+      flex: 1;
+      background: linear-gradient(145deg, #eef6ff, #ffffff);
+      border-radius: 48px;
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+
+    .ai-avatar {
+      background: white;
+      border-radius: 40px;
+      padding: 20px 16px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+    }
+
+    .ai-icon {
+      font-size: 4rem;
+      color: #1e88e5;
+      background: #e3f2fd;
+      width: 80px;
+      height: 80px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-bottom: 16px;
+    }
+
+    /* features */
+    .features {
+      margin: 90px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 48px;
+      color: #0a2b3e;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 28px 20px;
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+      text-align: center;
+      border: 1px solid #eef2f7;
+    }
+
+    .feature-card i {
+      font-size: 2.5rem;
+      background: #e3f2fd;
+      padding: 16px;
+      border-radius: 30px;
+      color: #1e88e5;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    /* demo-chat */
+    .demo-section {
+      background: #ffffff;
+      border-radius: 48px;
+      padding: 40px;
+      margin: 60px 0;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(30,136,229,0.15);
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .chat-window {
+      background: #f8fafc;
+      border-radius: 32px;
+      padding: 20px;
+      max-width: 700px;
+      margin: 0 auto;
+      border: 1px solid #e2edf7;
+    }
+
+    .messages {
+      min-height: 280px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .message.ai .bubble {
+      background: white;
+      border-radius: 20px 20px 20px 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: 1px solid #dfe9f2;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message.user .bubble {
+      background: #1e88e5;
+      color: white;
+      border-radius: 20px 20px 8px 20px;
+    }
+
+    .bubble {
+      padding: 12px 18px;
+      max-width: 80%;
+      font-size: 0.95rem;
+    }
+
+    .avatar-chat {
+      width: 36px;
+      height: 36px;
+      background: #e3f2fd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e88e5;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      background: white;
+      border-radius: 60px;
+      padding: 6px 6px 6px 20px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .input-area input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .input-area button {
+      background: #1e88e5;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .disclaimer {
+      font-size: 0.7rem;
+      text-align: center;
+      margin-top: 20px;
+      color: #6c86a3;
+    }
+
+    /* footer */
+    footer {
+      background: #0a2b3e;
+      color: #cbdae9;
+      padding: 48px 0 24px;
+      border-radius: 40px 40px 0 0;
+      margin-top: 60px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .footer-logo span {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #bdd3ec;
+      text-decoration: none;
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 760px) {
+      .hero-text h1 {
+        font-size: 2.2rem;
+      }
+      .navbar {
+        flex-direction: column;
+      }
+      .hero {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1>🏥 MedMind</h1>
-                <p>Быстрая оценка симптомов</p>
-                <p class="disclaimer">⚠️ Информационный сервис. При ухудшении обратитесь к врачу.</p>
-            </div>
-        </header>
 
-        <!-- Main Chat Area -->
-        <div class="chat-container">
-            <!-- Quick Buttons -->
-            <div class="quick-buttons">
-                <h3>Быстрый выбор:</h3>
-                <div class="button-group">
-                    <button class="quick-btn" data-symptom="Болит голова">🧠 Голова</button>
-                    <button class="quick-btn" data-symptom="Болит живот">🫘 Живот</button>
-                    <button class="quick-btn" data-symptom="Кашель">🫁 Кашель</button>
-                    <button class="quick-btn" data-symptom="Температура">🌡️ Температура</button>
-                    <button class="quick-btn" data-symptom="Боль в спине">🔙 Спина</button>
-                    <button class="quick-btn" data-symptom="Горло болит">🗣️ Горло</button>
-                </div>
-            </div>
-
-            <!-- Chat Box -->
-            <div id="chat-box" class="chat-box">
-                <div class="message system">
-                    👋 Привет! Я помогу оценить ваши симптомы. Опишите, что вас беспокоит.
-                </div>
-            </div>
-
-            <!-- Results Panel (hidden by default) -->
-            <div id="results-panel" class="results-panel" style="display: none;">
-                <div id="triage-indicator" class="triage-indicator"></div>
-                <div id="recommendations" class="recommendations"></div>
-                <button id="reset-btn" class="btn-secondary">Новая консультация</button>
-            </div>
-
-            <!-- Input Area -->
-            <div class="input-area">
-                <textarea id="user-input" placeholder="Опишите симптомы... (Например: сильно болит голова, температура 38)" rows="2"></textarea>
-                <div class="input-buttons">
-                    <button id="send-btn" class="btn-primary">Отправить</button>
-                    <button id="emergency-btn" class="btn-danger">🚨 Экстренно</button>
-                </div>
-            </div>
-
-            <!-- History -->
-            <div class="history-section">
-                <h3>История консультаций</h3>
-                <div id="history-list" class="history-list"></div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>⚠️ Данный сервис предоставляет информационные советы и не заменяет консультацию врача.</p>
-            <p>При возникновении экстренной ситуации вызовите скорую помощь: <strong>112</strong></p>
-        </footer>
+<div class="container">
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-brain"></i>
+      <span>MediMind AI</span>
     </div>
+    <div class="nav-links">
+      <a href="#">Главная</a>
+      <a href="#">Возможности</a>
+      <a href="#">О нас</a>
+      <a href="#" class="btn-outline">Вход для врачей</a>
+    </div>
+  </nav>
 
-    <script src="/static/script.js"></script>
+  <div class="hero">
+    <div class="hero-text">
+      <span class="hero-badge"><i class="fas fa-shield-alt"></i> 24/7 • Конфиденциально</span>
+      <h1>Ваш персональный AI-медицинский консультант</h1>
+      <p>Мгновенные ответы, доказательная медицина, поддержка принятия решений. Не заменяет врача, но помогает разобраться в симптомах, подготовиться к визиту и следить за здоровьем.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" id="scrollToDemoBtn"><i class="fas fa-comment-dots"></i> Попробовать консультацию</button>
+        <button class="btn-secondary"><i class="fas fa-play-circle"></i> Смотреть видео</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="ai-avatar">
+        <div class="ai-icon">
+          <i class="fas fa-robot"></i>
+        </div>
+        <h3>MediMind AI v.2.5</h3>
+        <p style="font-size: 0.85rem; color:#2c5a7a;">🔬 База: 12 000+ мед. исследований</p>
+        <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px;">
+          <span style="background:#e9f5ff; padding:4px 12px; border-radius:40px; font-size:0.75rem;">DSM-5</span>
+          <span style="background:#e9f5ff; padding:4px 12px; border-radius:40px; font-size:0.75rem;">Клинические рекомендации</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <h2 class="section-title">Интеллектуальные возможности</h2>
+    <div class="feature-grid">
+      <div class="feature-card"><i class="fas fa-stethoscope"></i><h3>Анализ симптомов</h3><p>Опишите свое состояние — AI предложит возможные направления для диагностики.</p></div>
+      <div class="feature-card"><i class="fas fa-pills"></i><h3>Лекарственная совместимость</h3><p>Проверка взаимодействий препаратов по актуальным базам данных.</p></div>
+      <div class="feature-card"><i class="fas fa-heartbeat"></i><h3>Мониторинг здоровья</h3><p>Интеграция с трекерами и история наблюдений (шифрование end-to-end).</p></div>
+      <div class="feature-card"><i class="fas fa-file-alt"></i><h3>Подготовка к приёму</h3><p>Сформируйте вопросы для врача и персонализированный чек-лист.</p></div>
+    </div>
+  </div>
+
+  <div class="demo-section" id="demo-chat-section">
+    <div class="demo-header">
+      <h2><i class="fas fa-message-medical"></i> Протестируйте ИИ-консультанта</h2>
+      <p style="color: #4d6a8f;">Пример диалога — введите запрос или выберите быстрый сценарий</p>
+    </div>
+    <div class="chat-window">
+      <div class="messages" id="chatMessages">
+        <div class="message ai">
+          <div class="avatar-chat"><i class="fas fa-robot"></i></div>
+          <div class="bubble">Здравствуйте! Я MediMind AI — этичный помощник. Опишите ваши симптомы или задайте вопрос. ⚕️<br><span style="font-size:0.7rem;">*Важно: я не заменяю врача, при тревожных симптомах обратитесь в клинику.</span></div>
+        </div>
+      </div>
+      <div class="input-area">
+        <input type="text" id="chatInput" placeholder="Напишите, что вас беспокоит, например: головная боль, температура 37.5..." autocomplete="off">
+        <button id="sendBtn"><i class="fas fa-paper-plane"></i> Отправить</button>
+      </div>
+      <div class="disclaimer">
+        <i class="fas fa-lock"></i> Анонимно. Данные не сохраняются. Демонстрационный режим.
+      </div>
+      <div style="display: flex; justify-content: center; gap: 10px; margin-top: 16px;">
+        <button class="btn-secondary quick-btn" style="padding: 8px 16px;" data-question="У меня болит горло и кашель уже 3 дня, что делать?">🤒 Боль в горле + кашель</button>
+        <button class="btn-secondary quick-btn" style="padding: 8px 16px;" data-question="Какие анализы сдать при хронической усталости?">🧪 Усталость → анализы</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo"><span>MediMind AI</span><p style="margin-top:8px;">Медицина, улучшенная AI</p></div>
+      <div class="footer-links">
+        <div><a href="#">Конфиденциальность</a><br><a href="#">Пользовательское соглашение</a><br><a href="#">Лицензии</a></div>
+        <div><a href="#">Партнёрам</a><br><a href="#">Врачам</a><br><a href="#">API</a></div>
+      </div>
+    </div>
+    <div class="copyright">© 2025 MediMind AI. Не предназначен для экстренной помощи. При неотложных состояниях звоните 112 или 103.</div>
+  </div>
+</footer>
+
+<script>
+  // симуляция ответов AI (медицинский консультант)
+  const chatMessagesDiv = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  function addMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${sender}`;
+    if (sender === 'ai') {
+      msgDiv.innerHTML = `
+        <div class="avatar-chat"><i class="fas fa-robot"></i></div>
+        <div class="bubble">${text}</div>
+      `;
+    } else {
+      msgDiv.innerHTML = `
+        <div class="avatar-chat" style="background:#1e88e5; color:white;"><i class="fas fa-user"></i></div>
+        <div class="bubble">${text}</div>
+      `;
+    }
+    chatMessagesDiv.appendChild(msgDiv);
+    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+  }
+
+  // интеллектуальная обработка запроса (медицинский AI)
+  function getAIResponse(userMessage) {
+    const msg = userMessage.toLowerCase();
+    if (msg.includes('головн') || msg.includes('голова') && (msg.includes('боль') || msg.includes('болит'))) {
+      return "Головная боль может быть вызвана напряжением, обезвоживанием или нарушением сна. ⚕️ Рекомендую измерить давление, отдохнуть в проветренном помещении. Если боль острая, внезапная или сопровождается тошнотой/нарушением речи — срочно обратитесь к врачу. Я могу составить дневник симптомов.";
+    } 
+    else if (msg.includes('горл') || (msg.includes('кашель') && msg.includes('горло'))) {
+      return "Боль в горле и кашель в течение 3 дней часто указывают на ОРВИ или фарингит. Рекомендации: тёплое питьё, полоскание солью/содой, отдых. Если температура выше 38.5°C более 2 дней или появляется одышка — обратитесь к терапевту. Нужно исключить стрептококк мазком при длительной боли.";
+    }
+    else if (msg.includes('устал') || msg.includes('анализы') && msg.includes('устал') || msg.includes('хронической усталости')) {
+      return "Для диагностики хронической усталости врачи рекомендуют: ОАК, ферритин, витамин D, гормоны щитовидной железы (ТТГ, св.Т4), уровень кортизола, а также тесты на инфекции (CMV, EBV). Желательна консультация терапевта и эндокринолога. Также важен режим сна и питания.";
+    }
+    else if (msg.includes('температур') || msg.includes('темп')) {
+      return "Субфебрильная температура (37-38°C) часто сопровождает вирусные инфекции. Важно следить за динамикой. Если держится более 3-5 дней, появляются боли в теле, сыпь или озноб — посетите врача. При температуре >39°C используйте жаропонижающие (парацетамол/ибупрофен) и вызовите врача, если не снижается.";
+    }
+    else if (msg.includes('давление') || msg.includes('гипертония')) {
+      return "Артериальное давление: норма 120/80 мм рт.ст. При постоянных повышениях (>135/85) необходимо наблюдение кардиолога. Рекомендую вести дневник давления 2 раза в день. Не занимайтесь самолечением, антигипертензивные препараты только по назначению врача.";
+    }
+    else if (msg.includes('спасибо')) {
+      return "Всегда рад помочь! Заботьтесь о себе. Напомню, что моя информация не заменяет профессиональную медицинскую консультацию. Берегите здоровье 🌿";
+    }
+    else if (msg.includes('аллерги')) {
+      return "Аллергические реакции: зуд, сыпь, чихание. Антигистаминные (лоратадин, цетиризин) могут облегчить симптомы. При отёке лица/горла или затруднённом дыхании немедленно вызывайте скорую. Для выявления аллергена необходим анализ IgE и кожные пробы.";
+    }
+    else {
+      return "Благодарю за обращение. Для качественного анализа опишите подробнее: локализацию симптомов, длительность, есть ли температура или другие жалобы. Помните, я AI-ассистент, не клиницист. В экстренных случаях звоните 103. Также вы можете задать вопрос про лекарства, профилактику или расшифровку анализов.";
+    }
+  }
+
+  function sendUserMessage() {
+    let text = chatInput.value.trim();
+    if (text === "") return;
+    addMessage(text, 'user');
+    chatInput.value = '';
+    // "печатает" эффект - небольшая задержка для реализма
+    setTimeout(() => {
+      const aiReply = getAIResponse(text);
+      addMessage(aiReply, 'ai');
+    }, 500);
+  }
+
+  sendBtn.addEventListener('click', sendUserMessage);
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendUserMessage();
+  });
+
+  // быстрые кнопки
+  const quickBtns = document.querySelectorAll('.quick-btn');
+  quickBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const question = btn.getAttribute('data-question');
+      if (question) {
+        chatInput.value = question;
+        sendUserMessage();
+      }
+    });
+  });
+
+  // плавный скролл до демо-чата
+  const scrollBtn = document.getElementById('scrollToDemoBtn');
+  if(scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+      document.getElementById('demo-chat-section').scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // маленькое "приветствие" от AI при загрузке для интерактива, но уже есть приветствие
+  // чисто декорация
+</script>
 </body>
 </html>
